@@ -1,61 +1,36 @@
 <h1 class="title">Train Cost Checker</h1>
 
 <Div class="menu">
+  <%= form_tag(checks_show_path, method: :post, class: "fileimport",multipart: true) do %>
+    <%= file_field_tag :file %>
+    <%= submit_tag "ファイルインポート",id:"importbutton" %>
+  <% end %>
   <div class="left">
     <Div class="menu__left">
       Input
+      <button type="button" id="btn_id">CHECK START</button>
     </Div>
-
-
-
-<% require 'csv' %>
-<% csv_data = CSV.read("/Users/takeyayasuhiro/desktop/testyou.csv", headers: true) %>
-<% csv_data.each do |data| %>
-    <div class="menu__left">
-      <%= form_tag(checks_new_path, method: :post, class: "checkform") do %>
-        <input placeholder="出発駅" type="text" name="fromstation" class="fromstation" value=<%= data["fromstation"] %> >
-        <input placeholder="到着駅" type="text" name="tostation" class="tostation" value=<%= data["tostation"] %>>
-         <input placeholder="金額" type="text" name="cost" class="cost" value=<%= data["cost"] %> >
-         <input type="submit" value="CHECK">
-     <% end %>
-    </div>
-  <% end %>
 
     <% num=0 %>
     <% while num<3 do %>
-    <Div class="menu__left">
-      <%= form_tag(checks_new_path, method: :post, class: "checkform") do %>
+    <Div class="menu__left" data-no="<%= num %>">
+      <%= form_tag(checks_new_path, method: :post, class: "checkform",id:"form#{num}") do %>
         <input placeholder="出発駅" type="text" name="fromstation" class="fromstation">
         <input placeholder="到着駅" type="text" name="tostation" class="tostation">
          <input placeholder="金額" type="text" name="cost" class="cost">
-         <input type="submit" value="CHECK">
-     <% end %>
+         <input type="submit" value="CHECK" style="display:none;">
+      <% end %>
     </Div>
     <% num=num+1 %>
     <% end %>
-
-<!--       <%= form_tag(checks_new_path, method: :post, class: "checkform") do %>
-    <% num=0 %>
-    <% while num<3 do %>
-      <div class="menu__left">
-        <input placeholder="出発駅" type="text" name="fromstation" class="fromstation">
-        <input placeholder="到着駅" type="text" name="tostation" class="tostation">
-         <input placeholder="金額" type="text" name="cost" class="cost">
-      </div>
-     <% num=num+1 %>
-     <% end %>
-
-
-    <input type="submit" value="CHECK">
-    <% end %>
- -->
-
 
     </div>
   <div class="right">
 
   <Div class="menu__right">
     Output
+    <button type="button" id="btn_id2" style="display:none;">CSVでエクスポート</button>
+    <a style="display:none;" id="downloader" href="#"></a>
   </Div>
 
 </Div>
