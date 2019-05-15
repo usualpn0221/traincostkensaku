@@ -1,16 +1,22 @@
 class ChecksController < ApplicationController
   def index
 
-
   end
 
   def new
 
     agent = Mechanize.new
-    page = agent.get("https://transit.yahoo.co.jp/search/result?flatlon=&fromgid=&from=#{checks_params[:fromstation]}$tlatlon=&togid=&to=#{checks_params[:tostation]}&viacode=&via=&viacode=&via=&viacode=&via=&y=2019&m=03&d=21&hh=20&m2=6&m1=1&type=1&ticket=ic&expkind=1&ws=3&s=1&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&kw=#{checks_params[:tostation]}")
+    page = agent.get("https://transit.yahoo.co.jp/")
+    yahoo_form = page.form('search')
+    yahoo_form.from = params[:fromstation]
+    yahoo_form.to = params[:tostation]
+    yahoo_form.s = '1'
+    page = agent.submit(yahoo_form, yahoo_form.buttons.first)
+    @kekka = []
     elements = page.at('.fare .mark')
-    @kekka = elements.inner_text
-    @kekka =@kekka.delete("円")
+    kekka = elements.inner_text
+    @kekka << kekka.delete("円")
+    @kekka << page.uri
     respond_to do |format|
       format.html
       format.json {render json: @kekka}
@@ -24,6 +30,14 @@ class ChecksController < ApplicationController
   end
 
   def show
+
+    file = params[:file]
+    @csv_data = CSV.read(file.path)
+    respond_to do |format|
+      format.html
+      format.json {render json: @csv_data}
+    end
+
   end
 
   def edit
